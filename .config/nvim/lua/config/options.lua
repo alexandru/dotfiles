@@ -5,3 +5,6 @@
 if vim.g.neovide then
   vim.g.neovide_theme = "auto"
 end
+
+-- Fixes markdown rendering to not conceal syntax
+vim.o.conceallevel = 0

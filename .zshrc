@@ -133,10 +133,10 @@ precmd_vcs_info() {
 precmd_functions+=(precmd_vcs_info)
 setopt prompt_subst
 
-export PROMPT="%F{196}%B%(?..?%? )%b%f%F{27}%2~%f%F{245} %#%f "
-export RPROMPT="%B\$vcs_info_msg_0_%f%b"
+export PROMPT="%F{196}%B%(?..?%? )%b%f%F{27}%2~%f%B\$vcs_info_msg_0_%f%b %F{245}%#%f "
+# export RPROMPT="%B\$vcs_info_msg_0_%f%b"
 
-zstyle ':vcs_info:git:*' formats '%F{240}%b %f %F{237}%r%f'
+zstyle ':vcs_info:git:*' formats '%F{31}  %b%f'
 zstyle ':vcs_info:*' enable git
 
 # ------------------------------------------------------------------------------

@@ -5,6 +5,10 @@ set -e
 SCRIPT_DIR="$(dirname $0)"
 cd "$SCRIPT_DIR" || exit 1
 
+echo "--------------------------------"
+echo "Installing Homebrew packages"
+echo "---"
+
 brew upgrade
 brew install --quiet \
   1password-cli \
@@ -19,6 +23,7 @@ brew install --quiet \
   jenv \
   kotlin \
   lazygit \
+  luarocks \
   neovim \
   nvm \
   opam \
@@ -47,7 +52,26 @@ brew install --cask \
   jordanbaird-ice \
   neovide
 
+echo "--------------------------------"
+echo "Installing Rust stuff"
+echo "---"
+
+rustup update
+rustup component add \
+  clippy \
+  rust-analyzer \
+  rust-docs \
+  rustfmt
+
+echo "--------------------------------"
+echo "Building scripts"
+echo "---"
+
 make -C "$HOME/bin/" clean all
+
+echo "--------------------------------"
+echo "Creating the .secrets file"
+echo "---"
 
 # ---------------------
 # Setting env variables
@@ -65,8 +89,10 @@ make -C "$HOME/bin/" clean all
 
 chmod go-rwx "$HOME/.secrets"
 
-# ---------------------
-# Configuring Notes
+echo "--------------------------------"
+echo "Configuring Notes & Wiki"
+echo "---"
+
 if [ ! -d "$HOME/Wiki" ]; then
   git clone git@github.com:alexandru/alexn.org.git "$HOME/Wiki"
 fi
@@ -74,8 +100,13 @@ if [ ! -d "$HOME/Notes" ]; then
   git clone git@github.com:alexandru/notes.git "$HOME/Notes"
 fi
 
-# -----------------------
-# Configuring screenshots
+if [[ -z "$(launchctl list | grep my.notes)" ]]; then
+  launchctl load -w ~/Library/LaunchAgents/my.notes.plist
+fi
+
+echo "--------------------------------"
+echo "Configuring Screenshots & OCR"
+echo "---"
 
 mkdir -p ~/Screenshots/{Processing,Raw,OCR}
 defaults write com.apple.screencapture location ~/Screenshots/Processing
@@ -83,11 +114,9 @@ if [[ -z "$(launchctl list | grep my.screenshot.ocr)" ]]; then
   launchctl load -w ~/Library/LaunchAgents/my.sync.ocr.plist
 fi
 
-# -----------------------
-# Configuring notes
-if [[ -z "$(launchctl list | grep my.notes)" ]]; then
-  launchctl load -w ~/Library/LaunchAgents/my.notes.plist
-fi
+echo "--------------------------------"
+echo "Other system settings"
+echo "---"
 
 # For VS Code + vim key bindings
 defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
@@ -98,3 +127,7 @@ defaults write com.jetbrains.intellij.ce ApplePressAndHoldEnabled -bool false
 # defaults write -app 'preview' ApplePersistence -bool no
 # defaults write com.apple.TextEdit ApplePersistence -bool no
 # defaults write com.apple.TextEdit AutosavingDelay -int 0
+
+echo "--------------------------------"
+echo "Done!"
+echo "---"
