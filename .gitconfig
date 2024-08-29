@@ -1,0 +1,26 @@
+[user]
+	name = Alexandru Nedelcu
+	email = noreply@alexn.org
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP9nw7C9tP49pl/rl50oxHoZ/G6qKSOIJgHGAc6F21rg
+[diff]
+    tool = default-difftool
+[difftool "default-difftool"]
+    cmd = "code --wait --diff \"$LOCAL\" \"$REMOTE\""
+[core]
+	autocrlf = input
+    ignorecase = false
+    #editor = "code --wait"
+[init]
+    defaultBranch = "main"
+[pull]
+	rebase = true
+[push]
+    autoSetupRemote = true
+[gpg]
+	format = ssh
+[gpg "ssh"]
+    program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+[commit]
+	gpgsign = true
+[credential]
+    helper = "osxkeychain"
