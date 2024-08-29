@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>my.notes</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/sh</string>
+        <string>-c</string>
+        <string>exec "$HOME/Applications/Notes Sync.app/Contents/MacOS/Automator Application Stub"</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>WatchPaths</key>
+    <array>
+        <string>/Users/alex/Notes/</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>300</integer>
+    <key>ThrottleInterval</key>
+    <integer>600</integer>
+    <key>StandardOutPath</key>
+    <string>/Users/alex/Library/Logs/notes-sync.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/alex/Library/Logs/notes-sync.log</string>
+</dict>
+</plist>

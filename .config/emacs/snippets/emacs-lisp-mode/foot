@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: foot
+# key: foot
+# expand-env: ((yas-indent-line 'fixed))
+# --
+(provide '${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`})
+;;; $1.el ends here

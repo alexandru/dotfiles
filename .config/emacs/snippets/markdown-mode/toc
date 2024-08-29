@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: toc
+# key: toc
+# expand-env: ((yas-indent-line 'fixed))
+# --
+<!-- toc -->
+$0

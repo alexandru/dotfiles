@@ -1,0 +1,13 @@
+.git
+.DS_Store
+.localized
+*.swp
+.#*
+/Apps/
+/Books/Audio/
+/Books/Video/
+/Health/
+/Media/Third-party/
+/Utils\ \&\ Drivers/
+/Work/
+/Shared/

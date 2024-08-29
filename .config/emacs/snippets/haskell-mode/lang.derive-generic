@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: DeriveGeneric
+# key: lang
+# expand-env: ((yas-indent-line 'fixed))
+# --
+{-# LANGUAGE DeriveGeneric #-}
+$0

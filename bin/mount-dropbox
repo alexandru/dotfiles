@@ -1,0 +1,18 @@
+#!/bin/sh
+
+exec /usr/local/opt/rclone-mac/libexec/rclone/rclone mount \
+  dropbox: "$HOME/Cloud/Dropbox" \
+  --volname "Dropbox" \
+  --buffer-size 64M \
+  --vfs-read-ahead 512M \
+  --vfs-cache-mode full \
+  --vfs-cache-max-age 168h0m0s \
+  --vfs-cache-max-size 100G \
+  --vfs-cache-poll-interval 30s \
+  --vfs-write-back 5s \
+  --log-level INFO \
+  --log-file "$HOME/Library/Logs/rclone-dropbox.log" \
+  --rc \
+  --rc-web-gui \
+  --rc-web-gui-no-open-browser \
+  --rc-htpasswd "$HOME/.config/rclone/htpasswd"

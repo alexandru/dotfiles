@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: head
+# key: head
+# expand-env: ((yas-indent-line 'fixed))
+# --
+;;; ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`.el} --- ${2:description} -*- lexical-binding: t; -*-
+
+;;; Commentary:
+;;
+;; $3
+;;
+
+;;; Code:
+$0

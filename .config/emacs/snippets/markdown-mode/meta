@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: meta
+# key: meta
+# expand-env: ((yas-indent-line 'fixed))
+# --
+---
+layout: post
+title: ""
+tags:
+  - 
+author: alexelcu
+image:
+description: >-
+  
+---
+$0

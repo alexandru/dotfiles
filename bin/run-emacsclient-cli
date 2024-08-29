@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+export EMACSCLIENT_OPTS='-t'
+exec run-emacsclient "$@"

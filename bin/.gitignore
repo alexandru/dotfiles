@@ -1,0 +1,7 @@
+.DS_Store
+.scala-build
+*.build_artifacts.txt
+.metals
+.vscode
+build
+.bsp

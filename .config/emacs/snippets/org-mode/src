@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: src
+# key: src
+# expand-env: ((yas-indent-line 'fixed))
+# --
+#+BEGIN_SRC ${1:lang}
+$0
+#+END_SRC

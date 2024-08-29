@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+mkdir -p ~/OneDrive/Local
+mkdir -p ~/OneDrive/.cache
+
+/usr/local/opt/rclone-mac/libexec/rclone/rclone \
+    bisync onedrive: ~/OneDrive/Local \
+    --check-access \
+    --check-filename ".rclone-check" \
+    --filters-file ~/.config/rclone/onedrive-filter.conf \
+    --workdir ~/OneDrive/.cache \
+    -v "$@"
+
+PROC_EXIT_CODE="$?"
+if [ "$PROC_EXIT_CODE" -ne 0 ]; then
+    /usr/local/bin/terminal-notifier -title "OneDrive sync failed!" -message "Check the logs"
+    echo "OneDrive sync failed"
+    exit $PROC_EXIT_CODE
+fi

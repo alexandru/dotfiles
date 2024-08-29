@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$HOME/Notes/" || exit 1
+
+notificationError() {
+    CMD="$1"
+    osascript -e 'display notification "'"$CMD"'" with title "Error in Sync Notes" subtitle "while executing command:" sound name "Alert"'
+    return 1
+}
+
+execCommand() {
+    CMD="$1"
+    if ! ( eval "$CMD" || notificationError "$CMD" ); then
+        return 1
+    fi
+}
+
+allCommitted() {
+    if git diff-index --quiet HEAD; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+allTracked() {
+    return "$(git ls-files -o --directory --exclude-standard | sed q | wc -l)"
+}
+
+isSyncedWithOrigin() {
+    execCommand "git fetch origin" >/dev/null 2>&1
+    if git merge-base --is-ancestor origin/main main; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+if ! ( echo -e "GET http://google.com HTTP/1.0\n\n" | nc google.com 80 > /dev/null 2>&1 ); then
+    echo "----------------------------------------"
+    date
+    echo "----------------------------------------"
+    echo
+    echo "No internet connection"
+    exit 1
+fi
+
+if ! ( allCommitted && allTracked); then
+    echo "----------------------------------------"
+    date
+    echo "----------------------------------------"
+    echo
+    execCommand "git add ."
+    execCommand "git commit -am 'Updates [$(date "+%Y-%m-%d %H:%M:%S")]'"
+    execCommand "git pull --rebase"
+
+    # git-prune-history-older-than-days 7
+    # git push --force-with-lease
+    execCommand "git push"
+    osascript -e 'display notification "Uploaded changes" with title "Notes Sync"'
+elif ! isSyncedWithOrigin; then
+    echo "----------------------------------------"
+    date
+    echo "----------------------------------------"
+    echo
+
+    execCommand "git pull --rebase"
+    osascript -e 'display notification "Downloaded changes" with title "Notes Sync"'
+else
+    echo "[$(date)] Nothing to do"
+fi

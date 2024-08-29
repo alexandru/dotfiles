@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: OverloadedStrings
+# key: lang
+# expand-env: ((yas-indent-line 'fixed))
+# --
+{-# LANGUAGE OverloadedStrings #-}
+$0

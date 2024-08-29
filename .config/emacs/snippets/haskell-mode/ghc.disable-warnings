@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Disable Warnings
+# key: ghc
+# expand-env: ((yas-indent-line 'fixed))
+# --
+{-# OPTIONS_GHC -w #-}

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+PROC_PID="$1"
+FNAME="/tmp/mem-$PROC_PID.png"
+
+if ps -p "$PROC_PID" > /dev/null; then
+    echo "Measuring PID $PROC_PID and recording in file: $FNAME"
+    psrecord --duration 30 --interval 2 --include-children --plot "$FNAME" "$PROC_PID" && open "$FNAME"
+else
+    echo "Process $PROC_PID is not running"
+    exit 1
+fi

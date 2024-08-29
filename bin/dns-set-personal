@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+networksetup -setdnsservers Wi-Fi "45.90.28.235" "45.90.30.235" "2a07:a8c0::b4:d5a5" "2a07:a8c1::b4:d5a5"
+dns-clear

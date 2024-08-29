@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: NamedFieldPuns
+# key: lang
+# expand-env: ((yas-indent-line 'fixed))
+# --
+{-# LANGUAGE NamedFieldPuns #-}
+$0

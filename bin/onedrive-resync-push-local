@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -e
+
+mkdir -p ~/OneDrive/Local
+mkdir -p ~/OneDrive/.cache
+
+rclone bisync ~/OneDrive/Local onedrive: \
+    --resync \
+    --filters-file ~/.config/rclone/onedrive-filter.conf \
+    --workdir ~/OneDrive/.cache \
+    -v
+
+find ~/OneDrive/Local -type d -d 1 -exec touch "{}/.rclone-check" \;
+
+rclone bisync onedrive: ~/OneDrive/Local \
+    --resync \
+    --filters-file ~/.config/rclone/onedrive-filter.conf \
+    --workdir ~/OneDrive/.cache \
+    -v

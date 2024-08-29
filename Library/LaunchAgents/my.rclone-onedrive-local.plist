@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>my.rclone-onedrive-local</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/alex/bin/onedrive-sync</string>
+        <string>--ignore-checksum</string>
+    </array>
+
+    <!-- The maximum time between runs (secs) -->
+    <key>StartInterval</key>
+    <integer>300</integer>
+    <!-- The list of paths to watch for changes -->
+    <key>WatchPaths</key>
+    <array><string>/Users/alex/OneDrive/Local</string></array>
+    <!-- The minimum time between runs (secs) -->
+    <key>ThrottleInterval</key>
+    <integer>120</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/alex/Library/Logs/rclone-onedrive-local.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/alex/Library/Logs/rclone-onedrive-local.log</string>
+</dict>
+</plist>

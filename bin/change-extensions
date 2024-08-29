@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+SRC_EXT="$1"
+DEST_EXT="$2"
+DIR="$3"
+
+print_error_and_exit()
+{
+    local msg="$1"
+    echo >&2
+    echo "ERROR — $msg!" >&2
+    echo >&2
+    echo "Usage: change-extensions <source-extension> <destination-extension> <dir>" >&2
+    echo >&2
+    echo "Example: change-extensions md md.txt ."
+    echo >&2
+    exit 1
+}
+
+if [ -z "$SRC_EXT" ]; then
+    print_error_and_exit "source file extension not given"
+elif [ -z "$DEST_EXT" ]; then
+    print_error_and_exit "destination file extension not given"
+elif [ -z "$DIR" ]; then
+    print_error_and_exit "directory path not given"
+elif [ ! -d "$DIR" ]; then
+    print_error_and_exit "directory path isn't valid"
+fi
+
+cd "$DIR" || print_error_and_exit "could not change to directory: $DIR"
+
+for f in *".$SRC_EXT"; do
+    f2="$(basename -- "$f" "$SRC_EXT")$DEST_EXT"
+    echo "$f -> $f2"
+    mv -- "$f" "$f2"
+done

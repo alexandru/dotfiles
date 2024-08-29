@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+DOMAIN_NAME="$1"
+SLEEP="$2"
+ERROR_FILE="/tmp/whois-error-$$.log"
+
+if [ -z "$SLEEP" ]; then
+  SLEEP="30"
+fi
+
+echo
+echo "Sleep configured at: $SLEEP seconds"
+echo "Error file: $ERROR_FILE"
+echo
+
+trap "rm -f $ERROR_FILE" EXIT
+
+while :
+do
+    DATE=$(date '+%F %T')
+    STATUS=$(whois "$DOMAIN_NAME" 2>$ERROR_FILE | grep 'Domain Status' | awk '{ $1=""; $2=""; print}' | tr -d '\040\011\012\015')
+
+    echo "[$DATE] status for $DOMAIN_NAME: '$STATUS'"
+    if [ -n "$STATUS" ]; then
+        if [ "$STATUS" != "PendingDelete" ]; then
+            terminal-notifier \
+              -title "DOMAIN $DOMAIN_NAME STATUS" \
+              -subtitle "$STATUS" \
+              -message "Buy now!!!" \
+              -open "https://rohost.com/inregistrare-domenii/" \
+              -contentImage "$HOME/Dropbox/Pictures/Icons/alert.jpg" \
+              -sound default
+        fi
+    else
+        ERROR=$(cat $ERROR_FILE | tr -d '\040\011\012\015')
+	      >&2 echo $ERROR
+
+        terminal-notifier \
+          -title "SCRIPT ERROR" \
+          -subtitle "check-domain $DOMAIN_NAME" \
+          -message "$ERROR" \
+          -contentImage "$HOME/Dropbox/Pictures/Icons/alert.jpg" \
+          -sound default
+    fi
+
+    sleep "$SLEEP"
+done

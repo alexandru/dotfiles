@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec /usr/local/Cellar/graphviz/2.40.1/Graphviz.app/Contents/MacOS/Graphviz "$@"

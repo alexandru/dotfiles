@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+MOUNT_NAME="OneDrive-Mount"
+MOUNT_DIR="$HOME/Library/CloudStorage/$MOUNT_NAME"
+LOG_PATH="$HOME/Library/Logs/rclone-onedrive-mirror.log"
+
+DAEMON_PID="$(pgrep -fi "rclone mount onedrive:")"
+if [ -n "$DAEMON_PID" ]; then
+    terminal-notifier -title "OneDrive is already mounted\!" -message "PID: $DAEMON_PID"
+    exit 1
+fi
+
+mkdir -p "$MOUNT_DIR"
+exec /usr/local/opt/rclone-mac/libexec/rclone/rclone mount \
+    onedrive: "$MOUNT_DIR" \
+    --volname "$MOUNT_NAME" \
+    --attr-timeout 8700h \
+    --buffer-size 64M \
+    --dir-cache-time 8760h \
+    --log-format "pid,date,time" \
+    --log-level INFO \
+    --poll-interval 30s \
+    --vfs-cache-max-age 8760h \
+    --vfs-cache-max-size 100G \
+    --vfs-cache-mode off \
+    --vfs-cache-poll-interval 30s \
+    --vfs-fast-fingerprint \
+    --vfs-read-ahead 512M \
+    --vfs-write-back 5s \
+    --rc \
+    --rc-web-gui \
+    --rc-web-gui-no-open-browser \
+    --rc-htpasswd "$HOME/.config/rclone/htpasswd" \
+    "$@"

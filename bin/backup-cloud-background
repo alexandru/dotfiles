@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -e
+
+CURRENT_DIR="$(dirname $0)"
+
+BACKUP_LOG_FILE="$HOME/Library/Logs/backup-cloud.log"
+echo "Logs are dumped in: $BACKUP_LOG_FILE"
+
+echo "-------------------" > "$BACKUP_LOG_FILE"
+date +"%Y-%m-%d %H:%M:%S" > "$BACKUP_LOG_FILE"
+echo "-------------------" > "$BACKUP_LOG_FILE"
+
+nohup "$CURRENT_DIR/backup-cloud" > "$BACKUP_LOG_FILE" 2>&1 &

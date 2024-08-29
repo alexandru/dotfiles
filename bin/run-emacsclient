@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [ -z "$EMACSCLIENT_OPTS" ]; then
+  EMACSCLIENT_OPTS="-nc"
+fi
+
+if [ $# -eq 0 ]; then
+  COMMAND='/usr/local/bin/emacsclient '$EMACSCLIENT_OPTS' -e "(if (display-graphic-p) (x-focus-frame nil))"'
+else
+  COMMAND='/usr/local/bin/emacsclient '$EMACSCLIENT_OPTS' "$@"'
+fi
+
+if [ -z "$(shopt | grep login_shell)" ]; then
+  echo "$COMMAND" | exec bash --login -s "$@"
+else
+  eval "exec $COMMAND"
+fi

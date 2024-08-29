@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# CREDITS: https://stackoverflow.com/a/56878987
+
+set -e
+
+DAYS="${1}"
+if [ -z "$DAYS" ] ; then
+    echo "Usage: $0 <days>" >&2
+    exit 1
+fi
+
+# Extracts the timestamps of the commits to keep (the last of the day)
+TOKEEP="$(mktemp)"
+trap 'rm -f "$TOKEEP"' EXIT
+export TOKEEP
+
+TODAY_START="$(gdate -d "$(gdate +%Y-%m-%d) 00:00:00Z" +%s)"
+SQUASH_UNTIL=$((TODAY_START - DAYS * 60 * 60 * 24))
+DATE=
+for time in $(git log --date=raw --pretty=format:%cd|cut -d\  -f1) ; do
+   CDATE=$(gdate -d @"$time" +%Y%m%d)
+   if [ "$SQUASH_UNTIL" -lt "$time" ] || [ "$DATE" != "$CDATE" ] ; then
+       echo @"$time" >> "$TOKEEP"
+       DATE=$CDATE
+   fi
+done
+
+# scan the repository keeping only selected commits
+export FILTER_BRANCH_SQUELCH_WARNING=1
+git filter-branch -f --commit-filter '
+    if grep -q ${GIT_COMMITTER_DATE% *} $TOKEEP ; then
+        git commit-tree "$@"
+    else
+        skip_commit "$@"
+    fi' HEAD
+rm -f "$TOKEEP"

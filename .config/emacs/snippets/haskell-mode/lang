@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: lang
+# key: lang
+# expand-env: ((yas-indent-line 'fixed))
+# --
+{-# LANGUAGE $1 #-}
+$0

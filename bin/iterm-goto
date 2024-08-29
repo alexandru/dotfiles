@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+GOTO_FILE="$1"
+GOTO_LINE="$2"
+
+if ! [ -f "$GOTO_FILE" ]; then
+    echo "ERROR: file path missing or invalid!" >&2
+    exit 1
+fi
+
+pgrep -x "idea" > /dev/null
+IDEA_RUNNING=$?
+
+if [[ "$GOTO_FILE" =~ ^.*\.(scala|sbt|kt|java)$ ]] && [ $IDEA_RUNNING -eq 0 ]; then
+    EDITOR_PATH="$(which idea)"
+    if [ -z "$IDEA_PATH" ]; then
+        if [ -f "/usr/local/bin/idea" ]; then
+            EDITOR_PATH="/usr/local/bin/idea"
+        elif [ -f "$HOME/Library/Application Support/JetBrains/Toolbox/scripts/idea" ]; then
+            EDITOR_PATH="$HOME/Library/Application Support/JetBrains/Toolbox/scripts/idea"
+        else
+            echo "ERROR: IntelliJ IDEA not found!" >&2
+            exit 1
+        fi
+    fi
+    if [ ! -f "$EDITOR_PATH" ]; then
+        EDITOR_PATH="$HOME/Library/Application Support/JetBrains/Toolbox/scripts/idea"
+    fi
+
+    if ! [ -z "$GOTO_LINE" ]; then
+        exec "$EDITOR_PATH" --line "$GOTO_LINE" "$GOTO_FILE"
+    else
+        exec "$EDITOR_PATH" "$GOTO_FILE"
+    fi
+else
+    EDITOR_PATH="$(which code)"
+    if [ -z "$EDITOR_PATH" ]; then
+        if [ -f "/usr/local/bin/code" ]; then 
+            EDITOR_PATH="/usr/local/bin/code"
+        elif [ -f "$HOME/bin/code" ]; then 
+            EDITOR_PATH="$HOME/bin/code"
+        fi
+    fi
+
+    if ! [ -z "$GOTO_LINE" ]; then
+        exec "$EDITOR_PATH" --goto "$GOTO_FILE:$GOTO_LINE"
+    else
+        exec "$EDITOR_PATH" "$GOTO_FILE"
+    fi
+fi

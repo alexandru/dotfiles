@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: GeneralizedNewtypeDeriving
+# key: lang
+# expand-env: ((yas-indent-line 'fixed))
+# --
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+$0
