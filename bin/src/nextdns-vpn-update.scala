@@ -34,6 +34,7 @@ val toUpdate = List(
     "lx-mqst01-pri.st.nix.ro.ing.net",
     "owp2.ro.ing.net",
     "password.ing.net",
+    "portalgp.ro.ing.net",
     "proxy-rtk0016-prd.dcr.prod.ichp.ing.net",
     "sdt.ing.net",
     "sm5aaraptr02.ad.ing.net",

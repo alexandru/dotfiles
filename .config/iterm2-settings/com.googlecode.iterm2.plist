@@ -1422,7 +1422,7 @@
 			<key>Semantic History</key>
 			<dict>
 				<key>action</key>
-				<string>command</string>
+				<string>best editor</string>
 				<key>editor</key>
 				<string>com.github.atom</string>
 				<key>text</key>

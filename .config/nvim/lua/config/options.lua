@@ -4,6 +4,7 @@
 
 if vim.g.neovide then
   vim.g.neovide_theme = "auto"
+  vim.opt.guifont = "FiraCode Nerd Font Mono:h18"
 end
 
 -- Fixes markdown rendering to not conceal syntax
