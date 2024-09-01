@@ -104,8 +104,7 @@ alias config="\"$(which git)\" --git-dir=\"$HOME/.dotfiles/\" --work-tree=\"$HOM
 
 ## Editor aliases
 alias e="nvim"
-alias ew="neovide --fork"
-alias notes='cd "$HOME/Notes/" && neovide .'
+alias ew="code"
 
 ## Util aliases
 alias ts="date +%s"

@@ -59,16 +59,16 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>if [ -f "/opt/homebrew/bin/neovide" ]; then
-  EDITOR_PATH="/opt/homebrew/bin/neovide"
-elif [ -f "/usr/local/bin/neovide" ]; then
-  EDITOR_PATH="/usr/local/bin/neovide"
+					<string>if [ -f "/opt/homebrew/bin/code" ]; then
+  EDITOR_PATH="/opt/homebrew/bin/code"
+elif [ -f "/usr/local/bin/code" ]; then
+  EDITOR_PATH="/usr/local/bin/code"
 else
-  EDITOR_PATH="$(which neovide)"
+  EDITOR_PATH="$(which code)"
 fi
 
 cd "$HOME/Wiki"
-exec "$EDITOR_PATH" --fork .
+exec "$EDITOR_PATH" .
 </string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
