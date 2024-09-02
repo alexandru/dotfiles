@@ -3,13 +3,12 @@
 set -e
 #exec rclone sync --delete-excluded dropbox:Pictures/ b2:Pictures0618/
 
-SYNC_TARGET="${1:-b2:AlexnBackup}"
+SYNC_TARGET="${1:-b2:NedelcuBackup}"
 
 echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 date +"%Y-%m-%d %H:%M:%S"
 echo "Backing up to $SYNC_TARGET"
 echo "-------------------------------"
-
 
 SCRIPT_DIR="$(dirname $0)"
 RSYNC_COMMON_ARGS=("-v" "--delete-excluded" "--exclude-from" "$HOME/.config/backup-cloud/excluded" "-c" "--track-renames" "--onedrive-hash-type" "sha1")
