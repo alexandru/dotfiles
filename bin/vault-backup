@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# 
+# Source:
+# https://bitwarden.com/blog/how-to-back-up-and-encrypt-your-bitwarden-vault-from-the-command-line/
+#
+# To decrypt:
+# openssl enc -aes-256-cbc -pbkdf2 -iter 2400000 -d -nopad -in <file.json.enc> -out <file.json>
+
+
+set -e
+
+export LC_CTYPE=C
+export LC_ALL=C
+export NODE_OPTIONS="--no-deprecation"
+
+BW_PASS="$(bw list items --search "Vaultwarden" | jq -r '.[] | select(.login.username == "alex@nedelcu.net") | .login.password')"
+if [ -z "$BW_PASS" ]; then
+    echo "No Bitwarden entry found for 'Vaultwarden'"
+    exit 1
+fi
+
+EXPORT_FILE="$HOME/Dropbox/Backups/Vaultwarden/bitwarden-export-$(date +%Y-%m).json.enc"
+
+bw export --raw --format json | openssl enc -aes-256-cbc -pbkdf2 -iter 2400000 -k "$BW_PASS" -out "$EXPORT_FILE"
+
+unset BW_PASS
