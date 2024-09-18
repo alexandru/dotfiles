@@ -1424,7 +1424,7 @@
 				<key>action</key>
 				<string>command</string>
 				<key>editor</key>
-				<string>com.github.atom</string>
+				<string>com.microsoft.VSCode</string>
 				<key>text</key>
 				<string>/Users/alex/bin/iterm-goto \1 \2</string>
 			</dict>

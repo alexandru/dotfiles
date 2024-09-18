@@ -1,6 +1,6 @@
 #!/usr/bin/env -S scala shebang
 
-//> using scala "3.3.1"
+//> using scala "3.3.3"
 //> using toolkit default
 //> using dep "com.monovore::decline:2.4.1"
 //> using options -java-output-version:17
