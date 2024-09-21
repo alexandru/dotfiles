@@ -1,0 +1,9 @@
+.bsp
+.metals
+.scala-build
+.idea
+*.iml
+*.build_artifacts.txt
+**/build/
+**/target/
+

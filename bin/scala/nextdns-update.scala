@@ -4,6 +4,7 @@
 //> using toolkit default
 //> using dep "com.monovore::decline:2.4.1"
 //> using options -java-output-version:17
+//> using packaging.graalvmArgs --no-fallback --initialize-at-build-time
 
 import cats.syntax.all.given
 import com.monovore.decline.*
@@ -13,53 +14,7 @@ import upickle.default.*
 import java.net.InetAddress
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-
-val domainsToCleanUp = List(
-    "ing.net"
-)
-
-val toUpdate = List(
-    "ace.ing.net",
-    "amyna.ad.ing.net",
-    "checkmarx.ad.ing.net",
-    "confluence.ing.net",
-    "dcr.rtk2.mdpl.ing.net",
-    "elk.ro.ing.net",
-    "elk.uat.ro.ing.net",
-    "employee-authentication.europe.intranet",
-    "fs.ing.net",
-    "iam.ro.ing.net",
-    "id.foundation.mdpl.ing.net",
-    "kibana.ro.ing.net",
-    "lx-mqst01-pri.st.nix.ro.ing.net",
-    "owp2.ro.ing.net",
-    "password.ing.net",
-    "portalgp.ro.ing.net",
-    "proxy-rtk0016-prd.dcr.prod.ichp.ing.net",
-    "sdt.ing.net",
-    "sm5aaraptr02.ad.ing.net",
-    "touchpoint.ing.net",
-    "ua.ing.net",
-    "useraccess.ing.net",
-    // ST (mock)
-    "lx-rpest01-pri.st.nix.ro.ing.net",
-    "lx-rpest03-pri.st.nix.ro.ing.net",
-    // ST (live)
-    "lx-rpest02-sec.st.nix.ro.ing.net",
-    "lx-rpest04-sec.st.nix.ro.ing.net",
-    // UAT
-    "lx-rpeuat01-pri.uat.nix.ro.ing.net",
-    "lx-rpeuat03-pri.uat.nix.ro.ing.net",
-    "lx-rpeuat04-sec.uat.nix.ro.ing.net",
-    "lx-rpeuat06-sec.uat.nix.ro.ing.net",
-    // Production
-    "lx-rpe01-pri.nix.ro.ing.net",
-    "lx-rpe03-pri.nix.ro.ing.net",
-    "lx-rpe05-pri.nix.ro.ing.net",
-    "lx-rpe08-sec.nix.ro.ing.net",
-    "lx-rpe10-sec.nix.ro.ing.net",
-    "lx-rpe12-sec.nix.ro.ing.net",
-)
+import java.nio.file.Path
 
 extension [T](resp: Response[T])
     def check(label: String, debug: Boolean = false): Unit =
@@ -69,7 +24,24 @@ extension [T](resp: Response[T])
         else if debug then
             println(s"DEBUG: Success on $label — HTTP ${resp.code.code}")
 
-def run(apiKey: String, profileId: String, dryRun: Boolean) =
+case class Host(name: String, ips: List[String])
+
+def parseHostsFile(path: Path): List[Host] =
+    scala.io.Source.fromFile(path.toFile)
+        .getLines
+        .map(_.trim)
+        .filterNot(l => l.isEmpty || l.startsWith("#"))
+        .map(_.split("\\s+").toList)
+        .collect:
+            case name :: ips => Host(name, ips)
+        .toList
+        .groupBy(_._1)
+        .map: 
+            case (name, ips) =>
+                Host(name, ips.toList.map(_._2).flatten)
+        .toList
+
+def run(hosts: List[Host], apiKey: String, profileId: String, dryRun: Boolean, verbose: Boolean) =
     case class GetResponse(data: List[Map[String, String]])
         derives ReadWriter
 
@@ -117,9 +89,12 @@ def run(apiKey: String, profileId: String, dryRun: Boolean) =
         printHeaderOnce
         println(s"Skipping $name (ip: $content)")
 
-    for name <- toUpdate do
-        val ips =
+    for Host(name, givenIps) <- hosts do
+        val ips = if givenIps.nonEmpty then 
+            givenIps.toSet 
+        else
             InetAddress.getAllByName(name).map(_.getHostAddress).toSet
+
         val entries = getProfile.data.filter: entry =>
             entry.get("name").contains(name)
         val ipsInEntries =
@@ -127,27 +102,32 @@ def run(apiKey: String, profileId: String, dryRun: Boolean) =
 
         val ipsToAdd = ips -- ipsInEntries
         val ipsToRemove = ipsInEntries -- ips
+        val ipsToSkip = ips & ipsInEntries
 
+        if verbose then
+            for ip <- ipsToSkip do
+                skip(name, ip)
         for ip <- ipsToAdd do
             post(name, ip)
-
         for
             ip <- ipsToRemove
             entry <- entries.find(_.get("content").contains(ip))
         do
             delete(entry("id"), name, ip)
 
-    for domain <- domainsToCleanUp do
-        val toDelete = getProfile.data.filter: entry =>
-            entry.getOrElse("name", "").endsWith(domain) &&
-            !toUpdate.contains(entry("name"))
-        for entry <- toDelete do
-            delete(entry("id"), entry("name"), entry("content"))
+    val toDelete = getProfile.data.filter: entry =>
+        !hosts.exists(h => h.name == entry("name"))
+    for entry <- toDelete do
+        delete(entry("id"), entry("name"), entry("content"))
 
 object Main extends CommandApp(
-    name = "nextdns-vpn-update",
+    name = "nextdns-update",
     header = "Update NextDNS's rewrites based on the current DNS (corporate VPN)",
     main =
+        val hostsInput = Opts
+            .argument[Path]("hosts-file")
+            .map(parseHostsFile)
+            .validate("Hosts file must not be empty")(_.nonEmpty)
         val apiKey = Opts
             .option[String]("api-key", help = "NextDNS API key")
             .orElse(Opts.env[String]("NEXTDNS_API_KEY", help = "NextDNS API key"))
@@ -156,6 +136,9 @@ object Main extends CommandApp(
             .orElse(Opts.env[String]("NEXTDNS_PROFILE_ID", help = "NextDNS profile ID"))
         val dryRun = Opts
             .flag("dry-run", help = "Dry run").orFalse
-
-        (apiKey, profileId, dryRun).mapN(run)
+        val verbose = Opts
+            .flag("verbose", help = "Verbose output (show skipped entries)")
+            .orFalse
+        (hostsInput, apiKey, profileId, dryRun, verbose)
+            .mapN(run)
 )

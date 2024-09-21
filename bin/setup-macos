@@ -73,21 +73,7 @@ echo "--------------------------------"
 echo "Creating the .secrets file"
 echo "---"
 
-# ---------------------
-# Setting env variables
-{
-  echo "# ------------------------"
-  echo "# Cloudflare secrets"
-  echo "export CLOUDFLARE_AUTH_EMAIL=\"$(op read "op://Private/CloudFlare/email")\""
-  echo "export CLOUDFLARE_AUTH_KEY=\"$(op read "op://Private/CloudFlare/Api Key/Global")\""
-  echo "# ------------------------"
-  echo "# NextDNS secrets"
-  echo "export NEXTDNS_API_KEY=\"$(op read "op://Private/NextDNS/Api Key")\""
-  echo "export NEXTDNS_PROFILE_ID=\"$(op read "op://Private/NextDNS/Profiles/ING")\""
-  echo "# -=-=-=-=-=-=-=-=-=-=-=-="
-} >~/.secrets
-
-chmod go-rwx "$HOME/.secrets"
+./setup-secrets
 
 echo "--------------------------------"
 echo "Configuring Notes & Wiki"
@@ -96,6 +82,7 @@ echo "---"
 if [ ! -d "$HOME/Wiki" ]; then
   git clone git@github.com:alexandru/alexn.org.git "$HOME/Wiki"
 fi
+
 if [ ! -d "$HOME/Notes" ]; then
   git clone git@github.com:alexandru/notes.git "$HOME/Notes"
 fi
