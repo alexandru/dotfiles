@@ -67,7 +67,7 @@ echo "--------------------------------"
 echo "Building scripts"
 echo "---"
 
-make -C "$HOME/bin/" clean all
+make -C "$HOME/bin/scala" clean all
 
 echo "--------------------------------"
 echo "Creating the .secrets file"
