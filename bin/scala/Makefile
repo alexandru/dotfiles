@@ -21,8 +21,8 @@ edit-nextdns-update: clean-ide
 
 nextdns-update: nextdns-update.scala
 	scala-cli --power package --native-image \
-		--graalvm-java-version 21 \
-		--graalvm-version 21 \
+		--graalvm-java-version 22 \
+		--graalvm-version 22 \
 		./nextdns-update.scala \
 		-f -o build/nextdns-update
 	[ -L ../nextdns-update ] || ln -s scala/build/nextdns-update ../nextdns-update
@@ -38,8 +38,8 @@ edit-time-since: clean-ide
 
 time-since: ./time-since.scala
 	scala-cli --power package --native-image \
-		--graalvm-java-version 21 \
-		--graalvm-version 21 \
+		--graalvm-java-version 22 \
+		--graalvm-version 22 \
 		./time-since.scala \
 		-f -o build/time-since
 	[ -L ../time-since ] || ln -s scala/build/time-since ../time-since
@@ -55,8 +55,8 @@ edit-orange-analyze-report: clean-ide
 
 orange-analyze-report: ./orange-analyze-report.scala
 	scala-cli --power package --native-image \
-		--graalvm-java-version 21 \
-		--graalvm-version 21 \
+		--graalvm-java-version 22 \
+		--graalvm-version 22 \
 		./orange-analyze-report.scala \
 		-f -o build/orange-analyze-report
 	[ -L ../orange-analyze-report ] || ln -s scala/build/orange-analyze-report ../orange-analyze-report
@@ -72,8 +72,8 @@ edit-cloudflare-ddns-update: clean-ide
 
 cloudflare-ddns-update: ./cloudflare-ddns-update.scala
 	scala-cli --power package --native-image \
-		--graalvm-java-version 21 \
-		--graalvm-version 21 \
+		--graalvm-java-version 22 \
+		--graalvm-version 22 \
 		./cloudflare-ddns-update.scala \
 		-f -o build/cloudflare-ddns-update
 	[ -L ../cloudflare-ddns-update ] || ln -s scala/build/cloudflare-ddns-update ../cloudflare-ddns-update
