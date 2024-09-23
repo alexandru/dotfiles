@@ -4,7 +4,7 @@
 //> using toolkit default
 //> using dep "com.monovore::decline:2.4.1"
 //> using dep "org.apache.commons:commons-csv:1.11.0"
-//> using options -java-output-version:17
+//> using packaging.graalvmArgs --no-fallback --initialize-at-build-time -Os
 
 import cats.syntax.all.given
 import cats.data.Validated

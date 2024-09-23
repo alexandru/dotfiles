@@ -2,7 +2,7 @@
 
 //> using scala "3.5.1"
 //> using dep "com.monovore::decline:2.4.1"
-//> using packaging.graalvmArgs --no-fallback --initialize-at-build-time
+//> using packaging.graalvmArgs --no-fallback --initialize-at-build-time -Os
 
 import cats.syntax.all.given
 import cats.data.{Validated, ValidatedNel}

@@ -4,7 +4,7 @@
 //> using toolkit default
 //> using dep "com.monovore::decline:2.4.1"
 //> using options -java-output-version:17
-//> using packaging.graalvmArgs --no-fallback --initialize-at-build-time
+//> using packaging.graalvmArgs --no-fallback --initialize-at-build-time -Os
 
 import cats.syntax.all.given
 import com.monovore.decline.*

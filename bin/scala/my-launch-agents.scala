@@ -5,7 +5,7 @@
 //> using dep "com.lihaoyi::os-lib:0.10.7"
 //> using dep "org.scala-lang.modules::scala-xml:2.3.0"
 //> using options -java-output-version:17
-//> using packaging.graalvmArgs --no-fallback --initialize-at-build-time --enable-url-protocols=http
+//> using packaging.graalvmArgs --no-fallback --initialize-at-build-time -Os --enable-url-protocols=http
 
 import cats.syntax.all.given
 import com.monovore.decline.*
