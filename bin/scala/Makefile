@@ -6,10 +6,7 @@ all: \
 	time-since
 
 clean:
-	scala-cli clean ./cloudflare-ddns-update.scala
-	scala-cli clean ./nextdns-update.scala
-	scala-cli clean ./orange-analyze-report.scala
-	scala-cli clean ./time-since.scala
+	find . -depth 1 -type f -name "*.scala" | xargs -Ipath scala-cli clean "path"
 	rm -rf build/
 
 clean-ide:
