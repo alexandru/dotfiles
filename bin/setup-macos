@@ -87,9 +87,7 @@ if [ ! -d "$HOME/Notes" ]; then
   git clone git@github.com:alexandru/notes.git "$HOME/Notes"
 fi
 
-if [[ -z "$(launchctl list | grep my.notes)" ]]; then
-  launchctl load -w ~/Library/LaunchAgents/my.notes.plist
-fi
+my-launch-agents enable my.notes
 
 echo "--------------------------------"
 echo "Configuring Screenshots & OCR"
@@ -97,9 +95,8 @@ echo "---"
 
 mkdir -p ~/Screenshots/{Processing,Raw,OCR}
 defaults write com.apple.screencapture location ~/Screenshots/Processing
-if [[ -z "$(launchctl list | grep my.screenshot.ocr)" ]]; then
-  launchctl load -w ~/Library/LaunchAgents/my.sync.ocr.plist
-fi
+
+my-launch-agents enable my.screenshot.ocr
 
 echo "--------------------------------"
 echo "Other system settings"

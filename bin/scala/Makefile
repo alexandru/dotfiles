@@ -1,4 +1,9 @@
-all: nextdns-update time-since orange-analyze-report cloudflare-ddns-update
+all: \
+	cloudflare-ddns-update \
+	my-launch-agents \
+	nextdns-update \
+	orange-analyze-report \
+	time-since
 
 clean:
 	scala-cli clean ./cloudflare-ddns-update.scala

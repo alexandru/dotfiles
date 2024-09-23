@@ -27,7 +27,7 @@ def loadXmlFile(file: File): Elem =
     val source = new InputSource(file.toURI.toString)
     XML.loadXML(source, parser)
 
-def listMyActiveAgents() =
+def listMyEnabledAgents() =
     os.proc("launchctl", "list")
         .call()
         .out
@@ -55,14 +55,16 @@ def listAllMyAgents() =
                 AvailableConfig(key, filename)
         .toList
 
-def activateAgent(agent: AvailableConfig) =
+def enableAgent(agent: AvailableConfig, active: Seq[ActiveAgent]) =
     val dest = os.home / "Library" / "LaunchAgents" / agent.filename
+    if active.exists(_.key == agent.key) then
+        os.proc("launchctl", "unload", "-w", dest).call(check = true)
     os.copy(os.home / ".config" / "my-launch-agents" / agent.filename, dest, replaceExisting = true)
     os.proc("launchctl", "load", "-w", dest).call()
 
-def deactivateAgent(agent: AvailableConfig) =
+def disableAgent(agent: AvailableConfig, active: Seq[ActiveAgent]) =
     val dest = os.home / "Library" / "LaunchAgents" / agent.filename
-    if listMyActiveAgents().exists(_.key == agent.key) then
+    if active.exists(_.key == agent.key) then
         os.proc("launchctl", "unload", "-w", dest).call(check = true)
     os.remove(dest, checkExists = false)
 
@@ -83,7 +85,7 @@ lazy val list = Command(
             println("-" * 9 + "+" + "-" * 32 + "+" + "-" * 41)
             println("STATUS   | KEY                            | FILENAME")
             println("-" * 9 + "+" + "-" * 32 + "+" + "-" * 41)
-        val active = listMyActiveAgents().map(_.key).toSet
+        val active = listMyEnabledAgents().map(_.key).toSet
         val all = listAllMyAgents()
         all.foreach: agent =>
             val status = if active.contains(agent.key) then "active" else "disabled"
@@ -94,21 +96,25 @@ lazy val list = Command(
         if !quiet then
             println()
 
-lazy val activate = Command(
-    name = "activate",
-    header = "Activate launch agents",
+lazy val enable = Command(
+    name = "enable",
+    header = "Enable launch agents",
 ).apply:
     (keysArgument, quietFlag).mapN: (keys, quiet) =>
         val agents = listAllMyAgents()
+        val active = listMyEnabledAgents()
+        if !quiet then
+            println("\nEnabling launch agents:")
         for key <- keys.toList do
             agents.find(_.key == key) match
                 case Some(agent) =>
-                    activateAgent(agent)
+                    enableAgent(agent, active)
                     if !quiet then
-                        println(s"\nActivated: ${agent.key} (${agent.filename})\n")
+                        println(s" + ${agent.key} (${agent.filename})")
                 case None =>
                     System.err.println(s"Agent not found: $key")
                     System.exit(1)
+        if !quiet then println()
 
 lazy val disable = Command(
     name = "disable",
@@ -116,12 +122,13 @@ lazy val disable = Command(
 ).apply:
     (keysArgument, quietFlag).mapN: (keys, quiet) =>
         val all = listAllMyAgents()
+        val enabled = listMyEnabledAgents()
         if !quiet then
             println("\nDisabling launch agents:")
         for key <- keys.toList do
             all.find(_.key == key) match
                 case Some(agent) =>
-                    deactivateAgent(agent)
+                    disableAgent(agent, enabled)
                     if !quiet then
                         println(s" - ${agent.key} (${agent.filename})")
                 case None =>
@@ -135,7 +142,7 @@ object Main extends CommandApp(
     main =
         Opts.subcommands(
             list,
-            activate,
+            enable,
             disable
         )
 )
