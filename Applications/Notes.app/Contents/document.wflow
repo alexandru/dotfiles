@@ -63,6 +63,8 @@
   EDITOR_PATH="/opt/homebrew/bin/code"
 elif [ -f "/usr/local/bin/code" ]; then
   EDITOR_PATH="/usr/local/bin/code"
+elif [ -f "$HOME/bin/code" ]; then
+  EDITOR_PATH="$HOME/bin/code"
 else
   EDITOR_PATH="$(which code)"
 fi

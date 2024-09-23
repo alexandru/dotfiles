@@ -77,3 +77,20 @@ cloudflare-ddns-update: ./cloudflare-ddns-update.scala
 		./cloudflare-ddns-update.scala \
 		-f -o build/cloudflare-ddns-update
 	[ -L ../cloudflare-ddns-update ] || ln -s scala/build/cloudflare-ddns-update ../cloudflare-ddns-update
+
+# --------------------------------------------------
+# my-launch-agents
+
+edit-my-launch-agents: clean-ide
+	scala-cli setup-ide \
+		--suppress-directives-in-multiple-files-warning \
+		./my-launch-agents.scala
+	code . --goto ./my-launch-agents.scala
+
+my-launch-agents: ./my-launch-agents.scala
+	scala-cli --power package --native-image \
+		--graalvm-java-version 22 \
+		--graalvm-version 22 \
+		./my-launch-agents.scala \
+		-f -o build/my-launch-agents
+	[ -L ../my-launch-agents ] || ln -s scala/build/my-launch-agents ../my-launch-agents
