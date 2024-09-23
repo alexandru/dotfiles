@@ -2,6 +2,7 @@
 .metals
 .scala-build
 .idea
+.vscode
 *.iml
 *.build_artifacts.txt
 **/build/
